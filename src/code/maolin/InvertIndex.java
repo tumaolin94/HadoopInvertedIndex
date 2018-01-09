@@ -22,14 +22,23 @@ import org.apache.log4j.Logger;
 public class InvertIndex extends Configured implements Tool {
 
   private static final Logger LOG = Logger.getLogger(InvertIndex.class);
-
+  private HashMap<String, String> DocID2Name = new HashMap<>();
   public static void main(String[] args) throws Exception {
     int res = ToolRunner.run(new InvertIndex(), args);
     System.exit(res);
   }
 
   public int run(String[] args) throws Exception {
-    Job job = Job.getInstance(getConf(), "wordcount");
+    Job job = Job.getInstance(getConf(), "invertIndex");
+    for (int i = 0; i < args.length; i += 1) {
+        if ("-map".equals(args[i])) {
+          job.getConfiguration().setBoolean("invertIndex.map.patterns", true);
+          i += 1;
+          job.addCacheFile(new Path(args[i]).toUri());
+          // this demonstrates logging
+          LOG.info("Added file to the distributed cache: " + args[i]);
+        }
+      }
     job.setJarByClass(this.getClass());
     // Use TextInputFormat, the default unless job.setInputFormatClass is used
     FileInputFormat.addInputPath(job, new Path(args[0]));
@@ -41,6 +50,8 @@ public class InvertIndex extends Configured implements Tool {
     return job.waitForCompletion(true) ? 0 : 1;
   }
 
+  
+  
   public static class Map extends Mapper<LongWritable, Text, Text, Text> {
     private final static IntWritable one = new IntWritable(1);
     private final static IntWritable two = new IntWritable(2);
