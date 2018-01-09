@@ -8,10 +8,17 @@
 
 - Output format
 
-`Word DocumentID: counts`
+`Word BookName: counts`
 
 Example:
-`a	73477705: 438	65600173: 1708`
+`a	Henry James___Four Meetings: 438	 Henry James___Georgina's Reasons: 1708`
 
-means the word `a` occurs 438 times in document 73477705, 1708 times in document 65600173
+means the word `a` occurs 438 times in book Henry James___Four Meetings, 1708 times in book Henry James___Georgina's Reasons
+
+Local test method:
+```
+<input_path>
+<output_path>
+-map <docID2Name_path>
+```
 
